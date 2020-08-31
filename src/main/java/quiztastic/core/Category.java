@@ -9,7 +9,13 @@ public class Category {
     private final String name;
 
     public Category(String name) {
-        this.name = name;
+        if(name == null){
+            throw new NullPointerException();
+        }
+        if(name.isEmpty() || name.isBlank()){
+            throw new IllegalArgumentException("Name should not be empty!");
+        }
+        this.name = name.toUpperCase();
     }
 
     @Override
