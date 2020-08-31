@@ -1,6 +1,7 @@
 package quiztastic.app;
 
 import org.junit.jupiter.api.Test;
+import quiztastic.core.Category;
 import quiztastic.core.Question;
 
 import java.io.*;
@@ -42,6 +43,9 @@ class QuestionReaderTest {
         assertNotNull(q);
         // Insert more tests
         assertEquals(100, q.getScore());
+        assertEquals(new Category("LAKES & RIVERS"), q.getCategory());
+        assertEquals("River mentioned most often in the Bible",q.getQuestion());
+        assertEquals("the Jordan", q.getAnswer());
 
         Question end = reader.readQuestion();
         assertNull(end);

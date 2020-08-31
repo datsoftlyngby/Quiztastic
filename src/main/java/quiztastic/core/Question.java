@@ -7,9 +7,15 @@ package quiztastic.core;
  */
 public class Question {
     private final int score;
+    private final Category category;
+    private final String question;
+    private final String answer;
 
-    public Question(int score) {
+    public Question(int score, Category category, String question, String answer) {
         this.score = score;
+        this.category = category;
+        this.question = question;
+        this.answer = answer;
     }
 
     public int getScore() {
@@ -21,5 +27,17 @@ public class Question {
         return "Question{" +
                 "score=" + score +
                 '}';
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 }
