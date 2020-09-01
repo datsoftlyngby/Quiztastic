@@ -36,18 +36,16 @@ public class QuestionReader {
                         lineCounter);
             }
             int score;
-            Category category;
-            String question, answer;
             try {
                 score = Integer.parseInt(fields[0]);
-                category = new Category(fields[1]);
-                question = fields[2];
-                answer = fields[3];
             } catch (NumberFormatException e) {
                 throw new ParseException(
                         "Expected an integer in field 1, but got \"" + fields[0] + "\"",
                         lineCounter);
             }
+            Category category = new Category(fields[1]);
+            String question = fields[2];
+            String answer = fields[3];
             return new Question(score, category, question, answer);
         }
     }

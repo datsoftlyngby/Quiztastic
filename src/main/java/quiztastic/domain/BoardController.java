@@ -4,25 +4,37 @@ import quiztastic.core.Board;
 import quiztastic.core.Category;
 import quiztastic.core.Question;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BoardController {
+    public final QuestionRepository questionRepository;
 
-    private final QuestionRepository qRepo;
-    public final Sampler sampler;
-
-    public BoardController(QuestionRepository qRepo){
-        this.qRepo = qRepo;
-        this.sampler = null;
+    public BoardController(QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
     }
 
-    public Board.Group makeGroup(Category c){
-        List<Question> questionList = qRepo.getQuestionsWithCategory(c);
-        List<Question> sampledQuestions = sampler.sample(questionList,5);
-       return new Board.Group(c,sampledQuestions);
+    public Board.Group makeGroup(Category c) throws IllegalArgumentException {
+        List<Question> questions =
+                questionRepository.getQuestionsWithCategory(c);
+        if (questions.size() >= 5) {
+            return new Board.Group(c, questions.subList(0, 5));
+        } else {
+            throw new IllegalArgumentException("Not enough questions in category");
+        }
     }
 
     public Board makeBoard() {
-        return null;
+        List<Board.Group> groups = new ArrayList<>();
+        for (Category c : questionRepository.getCategories()) {
+            try {
+                groups.add(makeGroup(c));
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
+        }
+        return new Board(groups);
     }
 }

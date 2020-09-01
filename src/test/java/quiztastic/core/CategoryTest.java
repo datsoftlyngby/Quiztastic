@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryTest {
 
     @Test
-    void shouldNormalizeNames(){
-        assertEquals(new Category("Hello"), new Category("Hello"));
+    void shouldNormalizeNames() {
+        assertEquals(new Category("hello"), new Category("HELLO"));
     }
 
 }

@@ -9,12 +9,10 @@ public class Category {
     private final String name;
 
     public Category(String name) {
-        if(name == null){
+        if (name == null)
             throw new NullPointerException();
-        }
-        if(name.isEmpty() || name.isBlank()){
-            throw new IllegalArgumentException("Name should not be empty!");
-        }
+        if (name.equals(""))
+            throw new IllegalArgumentException("The name should not be empty");
         this.name = name.toUpperCase();
     }
 

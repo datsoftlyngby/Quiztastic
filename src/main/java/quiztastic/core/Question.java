@@ -22,6 +22,18 @@ public class Question {
         return score;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
