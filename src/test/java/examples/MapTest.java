@@ -52,12 +52,12 @@ public class MapTest {
             String[] words = name.split(" ");
             String firstName = words[0], lastName = words[1];
             // Singleton patern-ish
-            Set<String> current = families.get(lastName);
-            if (current == null) {
-                current = new HashSet<>();
-                families.put(lastName, current);
+            Set<String> ape = families.get(lastName);
+            if (ape == null) {
+                ape = new HashSet<>();
+                families.put(lastName, ape);
             }
-            current.add(firstName);
+            ape.add(firstName);
         }
 
         assertEquals(Set.of("Rip", "Rap", "Rup", "Anders"),

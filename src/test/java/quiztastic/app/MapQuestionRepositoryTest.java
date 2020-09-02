@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MapQuestionRepositoryTest {
     private MapQuestionRepository smallQuestionRepo;
 
-    public static MapQuestionRepository getQuestionsSmallRepo() throws FileNotFoundException {
+    public static MapQuestionRepository getQuestionsSmallRepo() throws IOException, ParseException {
         InputStream s = MapQuestionRepository.class
                 .getClassLoader()
                 .getResourceAsStream("questions-small.tsv");
@@ -30,7 +31,7 @@ class MapQuestionRepositoryTest {
     }
 
     @BeforeEach
-    void createQuestionRepo () throws IOException {
+    void createQuestionRepo () throws IOException, ParseException {
          smallQuestionRepo = getQuestionsSmallRepo();
     }
 

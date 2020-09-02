@@ -1,7 +1,9 @@
 package quiztastic.entries;
 
 import quiztastic.app.QuestionReader;
+import quiztastic.core.Category;
 import quiztastic.core.Question;
+import quiztastic.domain.QuestionRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +21,7 @@ public class DisplayQuestions {
         int count = 0;
         Question q;
         while ((q = reader.readQuestion()) != null) {
-            System.out.println(q);
+            System.out.println(q.getScore() + "" + q.getAnswer() + q.getCategory() + q.getAnswer());
         }
 
 
