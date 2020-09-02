@@ -16,7 +16,10 @@ public class QuestionReader {
     private int lineCounter = 0;
 
     public QuestionReader(BufferedReader reader) {
+        System.out.println(22);
         this.reader = reader;
+        System.out.println(33
+        );
     }
 
     public QuestionReader(Reader reader) {
