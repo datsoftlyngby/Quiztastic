@@ -1,9 +1,8 @@
 package quiztastic.entries;
 
 import quiztastic.app.QuestionReader;
-import quiztastic.core.Category;
+import quiztastic.app.Quiztastic;
 import quiztastic.core.Question;
-import quiztastic.domain.QuestionRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,22 +11,10 @@ import java.text.ParseException;
 
 public class DisplayQuestions {
 
-    public void displayQuestions () throws IOException, ParseException {
-        InputStream s = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("master_season1-35clean.tsv");
-
-        QuestionReader reader = new QuestionReader(new InputStreamReader(s));
-        int count = 0;
-        Question q;
-        while ((q = reader.readQuestion()) != null) {
-            System.out.println(q.getScore() + "" + q.getAnswer() + q.getCategory() + q.getAnswer());
-        }
-
-
-    }
-
     public static void main(String[] args) throws IOException, ParseException {
-        new DisplayQuestions().displayQuestions();
+        Quiztastic quiz = Quiztastic.getInstance();
+        for (Question q : quiz.getQuestions()) {
+            System.out.println(q);
+        }
     }
 }

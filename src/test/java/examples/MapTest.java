@@ -46,22 +46,26 @@ public class MapTest {
                 "Maren Malkeko",
                 "Peter Pan");
 
-        Map<String, Set<String>> families = new HashMap<>();
+        Map<String, List<String>> families = new HashMap<>();
 
         for (String name : names) {
             String[] words = name.split(" ");
             String firstName = words[0], lastName = words[1];
-            // Singleton patern-ish
-            Set<String> ape = families.get(lastName);
-            if (ape == null) {
-                ape = new HashSet<>();
-                families.put(lastName, ape);
+            // Singleton pattern-ish
+            List<String> current = families.get(lastName);
+            // check (is lastName in families)
+            if (current == null) {
+                // save create new collection of names
+                current = new ArrayList<>();
+                // add it to families to fix situation
+                families.put(lastName, current);
             }
-            ape.add(firstName);
+            current.add(firstName);
         }
 
-        assertEquals(Set.of("Rip", "Rap", "Rup", "Anders"),
+        assertEquals(List.of("Rip", "Rap", "Rup", "Anders"),
                 families.get("And"));
-        assertEquals(Set.of("Peter"), families.get("Pan"));
+        assertEquals(List.of("Peter"), families.get("Pan"));
     }
+
 }
