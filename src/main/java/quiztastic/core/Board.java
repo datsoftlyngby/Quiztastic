@@ -3,8 +3,8 @@ package quiztastic.core;
 import java.util.ArrayList;
 import java.util.List;
 
-/** A Jeopardy Board
- *
+/**
+ * A Jeopardy Board
  */
 public class Board {
     private final List<Group> groups;
@@ -19,9 +19,7 @@ public class Board {
 
     @Override
     public String toString() {
-        return "Board{" +
-                "groups=" + groups +
-                '}';
+        return "Board: " + groups;
     }
 
     public static class Group {
@@ -49,10 +47,9 @@ public class Board {
 
         @Override
         public String toString() {
-            return "Group{" +
-                    "category=" + category +
-                    ", questions=" + questions +
-                    '}';
+            return ""
+                    + category +
+                    "\n Questions: " + questions;
         }
     }
 }
