@@ -19,7 +19,8 @@ public class MapQuestionRepository implements QuestionRepository {
 
     public static MapQuestionRepository fromQuestionReader(QuestionReader reader) throws IOException, ParseException {
         reader.readQuestion();
-        throw new UnsupportedOperationException("Not implemented yet!");
+        //throw new UnsupportedOperationException("Not implemented yet!");
+        return new MapQuestionRepository(new HashMap<>());
     }
 
     @Override

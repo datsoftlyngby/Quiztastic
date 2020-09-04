@@ -2,7 +2,7 @@ package quiztastic.app;
 
 import quiztastic.core.Board;
 import quiztastic.core.Question;
-import quiztastic.domain.BoardController;
+import quiztastic.domain.BoardFactory;
 import quiztastic.domain.QuestionRepository;
 
 import java.io.IOException;
@@ -41,6 +41,6 @@ public class Quiztastic {
     }
 
     public Board getBoard() {
-        return new BoardController(questions).makeBoard();
+        return new BoardFactory(questions).makeBoard();
     }
 }
