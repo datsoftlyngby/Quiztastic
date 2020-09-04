@@ -6,9 +6,7 @@ import quiztastic.domain.QuestionRepository;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MapQuestionRepository implements QuestionRepository {
     private final HashMap<Category, List<Question>> questionsByCategory;
