@@ -3,6 +3,7 @@ package quiztastic.app;
 import quiztastic.core.Board;
 import quiztastic.core.Question;
 import quiztastic.domain.BoardFactory;
+import quiztastic.domain.Game;
 import quiztastic.domain.QuestionRepository;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class Quiztastic {
                     .getResourceAsStream("master_season1-35clean.tsv");
             QuestionReader reader = new QuestionReader(new InputStreamReader(s));
             try {
-                instance = new Quiztastic(MapQuestionRepository.fromQuestionReader(reader));
+                instance = makeAPI(reader);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (ParseException e) {
@@ -31,9 +32,16 @@ public class Quiztastic {
     }
 
     private final QuestionRepository questions;
+    private final Game game;
 
-    private Quiztastic(QuestionRepository questions) {
+    private Quiztastic(QuestionRepository questions, Game game) {
         this.questions = questions;
+        this.game = game;
+    }
+
+    private static Quiztastic makeAPI(QuestionReader reader) throws IOException, ParseException {
+        QuestionRepository repo = MapQuestionRepository.fromQuestionReader(reader);
+        return new Quiztastic(repo, new Game(0, new BoardFactory(repo).makeBoard()));
     }
 
     public Iterable<Question> getQuestions() {
@@ -43,4 +51,9 @@ public class Quiztastic {
     public Board getBoard() {
         return new BoardFactory(questions).makeBoard();
     }
+
+    public Game getCurrentGame() {
+        return game;
+    }
+
 }
