@@ -32,16 +32,23 @@ public class Quiztastic {
     }
 
     private final QuestionRepository questions;
-    private final Game game;
+    private Game game;
 
     private Quiztastic(QuestionRepository questions, Game game) {
         this.questions = questions;
         this.game = game;
+
+        if (game == null) {
+            resetGame();
+        }
+    }
+    private Quiztastic(QuestionRepository questions) {
+        this(questions, null);
     }
 
     private static Quiztastic makeAPI(QuestionReader reader) throws IOException, ParseException {
         QuestionRepository repo = MapQuestionRepository.fromQuestionReader(reader);
-        return new Quiztastic(repo, new Game(0, new BoardFactory(repo).makeBoard()));
+        return new Quiztastic(repo);
     }
 
     public Iterable<Question> getQuestions() {
@@ -56,4 +63,7 @@ public class Quiztastic {
         return game;
     }
 
+    public void resetGame() {
+        game = new Game(0, new BoardFactory(questions).makeBoard());
+    }
 }

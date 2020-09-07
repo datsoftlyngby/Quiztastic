@@ -33,8 +33,8 @@ class PrettyPrinterTest {
         PrettyPrinter p = new PrettyPrinter(new PrintWriter(s));
         p.printRow(List.of("Hello, World! This is Cool", "Some", "Test"));
         String expected =
-                "| Hello, World! |      Some     |      Test     |\n" +
-                "| This is Cool  |               |               |\n";
+                "│ Hello, World! │      Some     │      Test     │\n" +
+                "│ This is Cool  │               │               │\n";
 
         assertEquals(expected, s.toString());
     }

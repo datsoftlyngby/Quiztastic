@@ -32,6 +32,8 @@ public class Protocol {
     }
 
     public void run() {
+        out.println("Welcome to Quiztastic!");
+        out.println("- press [h]elp for, you know, help.");
         while (true) {
             out.print("> ");
             out.flush();
@@ -39,6 +41,8 @@ public class Protocol {
                 Command cmd = fetchCommand();
                 in.nextLine();
                 if (cmd == null) {
+                    out.println("Thank you, next!");
+                    out.flush();
                     return;
                 } else {
                     cmd.doIt();
@@ -51,7 +55,11 @@ public class Protocol {
 
     private Command fetchCommand() throws ParseException {
         List<Callable<Command>> parsers =
-                List.of(this::parseHelp, this::parseDraw, this::parseAnswer);
+                List.of(this::parseHelp,
+                        this::parseDraw,
+                        this::parseAnswer,
+                        this::parseReset,
+                        this::parseQuit);
         for (Callable<Command> cmd : parsers) {
             try {
                 return cmd.call();
@@ -92,6 +100,16 @@ public class Protocol {
         }
     }
 
+    public Command parseReset() {
+        in.next("r|reset");
+        return new ResetCommand();
+    }
+
+    public Command parseQuit() {
+        in.next("q|quit");
+        return null;
+    }
+
     public interface Command {
         void doIt ();
     }
@@ -99,7 +117,12 @@ public class Protocol {
     public class HelpCommand implements Command {
         @Override
         public void doIt() {
-            out.println("There are no help!");
+            out.println("This is the help page:");
+            out.println("- [h]elp: for this help-page.");
+            out.println("- [r]eset: for a new board.");
+            out.println("- [d]raw: to see the current board.");
+            out.println("- [a]nswer [A-F][1-5]00: to try to answer a question.");
+            out.println("- [q]uit: to quit the game.");
         }
     }
 
@@ -107,6 +130,13 @@ public class Protocol {
         @Override
         public void doIt() {
             printer.printBoard(quiz.getCurrentGame());
+        }
+    }
+
+    public class ResetCommand implements Command {
+        @Override
+        public void doIt() {
+            quiz.resetGame();
         }
     }
 
