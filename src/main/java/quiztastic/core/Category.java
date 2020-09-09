@@ -35,9 +35,11 @@ public class Category {
 
     @Override
     public String toString() {
-        return "( " +
-                 name + '\'' +
-                ')';
+        String returnS =
+                name +
+                " \n";
+        returnS = returnS.replace(",","");
+        return returnS;
     }
 
 }

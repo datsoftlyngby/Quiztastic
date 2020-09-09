@@ -23,7 +23,12 @@ public class Board {
 
     @Override
     public String toString() {
-        return "Board: " + groups;
+        String returnS = "Board: " + groups;
+        returnS = returnS.replace("[","");
+        returnS = returnS.replace("]","");
+        returnS = returnS.replace(",","");
+
+        return returnS;
     }
 
     public static class Group {
@@ -59,9 +64,12 @@ public class Board {
 
         @Override
         public String toString() {
-            return ""
-                    + category +
-                    "\n Questions: " + questions;
+            String returnS = category +  "\n Questions: " + questions;
+            returnS = returnS.replace("[","");
+            returnS = returnS.replace("]","");
+            returnS = returnS.replace(",","");
+            return returnS;
+
         }
     }
 }

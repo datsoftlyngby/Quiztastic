@@ -6,6 +6,7 @@ import quiztastic.core.Question;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,8 +35,13 @@ public class BoardFactory {
                 groups.add(makeGroup(c));
             } catch (IllegalArgumentException e) {
                 continue;
+
             }
+
         }
         return new Board(groups);
+
     }
+
+
 }
