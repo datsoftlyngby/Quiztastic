@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Quiztastic:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Quiztastic_jar</output-path>
+    <root id="archive" name="Quiztastic.jar">
+      <element id="module-output" name="Quiztastic" />
+    </root>
+  </artifact>
+</component>

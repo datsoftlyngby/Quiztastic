@@ -65,9 +65,6 @@ public class Board {
         @Override
         public String toString() {
             String returnS = category +  "\n Questions: " + questions;
-            returnS = returnS.replace("[","");
-            returnS = returnS.replace("]","");
-            returnS = returnS.replace(",","");
             return returnS;
 
         }

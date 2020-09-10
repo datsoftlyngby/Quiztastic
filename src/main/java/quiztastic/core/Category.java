@@ -38,7 +38,6 @@ public class Category {
         String returnS =
                 name +
                 " \n";
-        returnS = returnS.replace(",","");
         return returnS;
     }
 

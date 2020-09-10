@@ -1,6 +1,7 @@
 package quiztastic.ui;
 
 import quiztastic.app.Quiztastic;
+import quiztastic.core.Category;
 import quiztastic.domain.Game;
 
 import java.io.BufferedReader;
@@ -20,21 +21,21 @@ public class Protocol {
         this.quiz = Quiztastic.getInstance();
     }
 
-    private String fetchCommand () {
+    private String fetchCommand() {
         out.print("> ");
         out.flush();
         String word = in.next(); // answer a100 -> answer
         return word;
     }
 
-    public void run () {
+    public void run() {
         String cmd = fetchCommand();
         while (!cmd.equals("quit")) {
             switch (cmd) {
                 case "h":
                 case "help":
-                   out.println("There are no help!");
-                   break;
+                    out.println("There are no help!");
+                    break;
                 case "draw":
                 case "d":
                     displayBoard();
@@ -47,7 +48,7 @@ public class Protocol {
                     answerQuestion("abcdef".indexOf(a), questionScore);
                     break;
                 default:
-                   out.println("Unknown command! " + cmd);
+                    out.println("Unknown command! " + cmd);
             }
             in.nextLine();
             out.flush();
@@ -57,12 +58,18 @@ public class Protocol {
     }
 
     private void answerQuestion(int categoryNumber, int questionScore) {
-
+        List<Integer> scores = List.of(100, 200, 300, 400, 500);
+        int questionNumber = scores.indexOf(questionScore);
     }
 
     private void displayBoard() {
         Game game = quiz.getCurrentGame();
-        List<Integer> scores = List.of(100,200,300,400,500);
+        List<Integer> scores = List.of(100, 200, 300, 400, 500);
+        for (Category c : game.getCategories()) {
+            out.print(c.getName());
+            out.print("  ");
+        }
+        out.println();
         for (int questionNumber = 0; questionNumber < 5; questionNumber++) {
             out.print("|");
             for (int category = 0; category < 6; category++) {

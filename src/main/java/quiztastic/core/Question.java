@@ -37,7 +37,6 @@ public class Question {
     @Override
     public String toString() {
         String returnS =" \n$" + score+"\n";
-        returnS = returnS.replace(",","");
         return returnS;
     }
 }
