@@ -11,7 +11,7 @@ import java.util.List;
 public class Game {
     private final Board board;
     private final List<Answer> answerList;
-    private HashMap<Integer, String> playerList;
+
 
     public Game(Board board, List<Answer> answerList) {
         this.board = board;
@@ -25,6 +25,7 @@ public class Game {
         }
         return categories;
     }
+
 
     public String answerQuestion(int categoryNumber, int questionNumber, String answer) {
         Question q = getQuestion(categoryNumber, questionNumber);
