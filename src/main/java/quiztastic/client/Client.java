@@ -42,7 +42,7 @@ public class Client {
                 connectToJeopardy();
                 break;
             case 3:
-                System.out.println("IP:");
+                System.out.println("IP: ");
                 SERVER_IP = scanner.nextLine();
                 System.out.println("Port:");
                 PORT = scanner.nextInt();
