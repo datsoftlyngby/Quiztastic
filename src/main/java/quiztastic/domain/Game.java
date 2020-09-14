@@ -5,11 +5,13 @@ import quiztastic.core.Category;
 import quiztastic.core.Question;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Game {
     private final Board board;
     private final List<Answer> answerList;
+    private HashMap<Integer, String> playerList;
 
     public Game(Board board, List<Answer> answerList) {
         this.board = board;

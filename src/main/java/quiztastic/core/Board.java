@@ -24,10 +24,6 @@ public class Board {
     @Override
     public String toString() {
         String returnS = "Board: " + groups;
-        returnS = returnS.replace("[","");
-        returnS = returnS.replace("]","");
-        returnS = returnS.replace(",","");
-
         return returnS;
     }
 

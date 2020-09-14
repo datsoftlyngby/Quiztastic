@@ -1,5 +1,6 @@
 package quiztastic.ui;
 
+import quiztastic.app.MapQuestionRepository;
 import quiztastic.app.Quiztastic;
 import quiztastic.core.Category;
 import quiztastic.domain.Game;
@@ -7,6 +8,7 @@ import quiztastic.domain.Game;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,7 +36,7 @@ public class Protocol {
             switch (cmd) {
                 case "h":
                 case "help":
-                    out.println("There are no help!");
+                    out.println("ITS FUCKING JEOPARDY, IF YOU DONT KNOW HOW TO PLAY GOOGLE IT!\nbut 4real, 'd' to draw the board, 'a' to answer. answers are entered as: Catagory Letter, Question, like so: 'B400'");
                     break;
                 case "draw":
                 case "d":
@@ -43,14 +45,14 @@ public class Protocol {
                 case "answer":
                 case "a":
                     String question = in.next();
+                    in.nextLine();
                     String a = question.substring(0, 1).toLowerCase(); // "A100" -> "a"
                     int questionScore = Integer.parseInt(question.substring(1)); // "A100" -> 100
                     answerQuestion("abcdef".indexOf(a), questionScore);
                     break;
                 default:
-                    out.println("Unknown command! " + cmd);
+                    out.println("Unknown command! '" + cmd + "' type help too see all commands");
             }
-            in.nextLine();
             out.flush();
             cmd = fetchCommand();
         }
@@ -58,28 +60,52 @@ public class Protocol {
     }
 
     private void answerQuestion(int categoryNumber, int questionScore) {
+        String userAnswer = null;
+        Game game = quiz.getCurrentGame();
         List<Integer> scores = List.of(100, 200, 300, 400, 500);
         int questionNumber = scores.indexOf(questionScore);
+        out.println(game.getQuestionText(categoryNumber, questionNumber)+ "\nEnter answer\n> ");
+        out.flush();
+         userAnswer = in.nextLine();
+        if(game.answerQuestion(categoryNumber,questionNumber,userAnswer) == null && userAnswer != null){
+            out.println("'"+userAnswer + "' was Correct, congrats cheater\n");
+        }
+        else if (userAnswer == null || userAnswer.isEmpty()){
+            out.print("Answer cannot be empty.. pls fix!\n");
+        }
+        else {
+            out.println("Correct answer was: " + game.answerQuestion(categoryNumber,questionNumber,userAnswer));
+            out.println("'"+userAnswer +"'   was incorrect, loser, xd\n");
+        }
+
     }
 
     private void displayBoard() {
+        int counter = 0;
+        List<String> CategoryIds = new ArrayList<>();
+        CategoryIds.add("NULL"); CategoryIds.add("A."); CategoryIds.add("B."); CategoryIds.add("C."); CategoryIds.add("D."); CategoryIds.add("E."); CategoryIds.add("F.");
         Game game = quiz.getCurrentGame();
+
         List<Integer> scores = List.of(100, 200, 300, 400, 500);
         for (Category c : game.getCategories()) {
-            out.print(c.getName());
+            counter++;
+            out.print(CategoryIds.get(counter)+c.getName());
             out.print("  ");
         }
         out.println();
         for (int questionNumber = 0; questionNumber < 5; questionNumber++) {
-            out.print("|");
+            out.print("| ");
             for (int category = 0; category < 6; category++) {
-                out.print("    ");
+                if (game.isAnswered(category, questionNumber)){
+                }
+                out.print("     ");
                 if (game.isAnswered(category, questionNumber)) {
-                    out.print("---");
+                    out.print("---   ");
                 } else {
                     out.print(scores.get(questionNumber));
+                    out.print("     ");
                 }
-                out.print("    |");
+                out.print(" |");
             }
             out.println();
         }
