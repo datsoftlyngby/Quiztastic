@@ -31,34 +31,32 @@ public class Game {
                 .collect(Collectors.toList());
     }
 
-    public boolean isAnswered(int category, int number) {
-        return answers.stream().anyMatch(a -> a.hasIndex(category, number));
+    public boolean isAnswered(Board.Index index) {
+        return answers.stream().anyMatch(a -> a.hasIndex(index));
     }
 
-    public ActiveQuestion selectQuestion(int category, int number) {
-        if (!isAnswered(category, number)) {
-            return new ActiveQuestion(category, number);
+    public ActiveQuestion selectQuestion(Board.Index index) {
+        if (!isAnswered(index)) {
+            return new ActiveQuestion(index);
         } else {
             throw new InvalidParameterException("Questions is already answered");
         }
     }
 
-    private Question getQuestion(int category, int number) {
-        return board.getGroups().get(category).getQuestions().get(number);
+    private Question getQuestion(Board.Index index) {
+        return board.getQuestion(index);
     }
 
     public class ActiveQuestion {
-        private final int category;
-        private final int number;
+        private final Board.Index index;
 
-        public ActiveQuestion(int category, int number) {
-            this.category = category;
-            this.number = number;
+        public ActiveQuestion(Board.Index index) {
+            this.index = index;
         }
 
         public void answerQuestion(String answer) throws InvalidAnswer {
             Question q = getQuestion();
-            answers.add(new Answer(category, number));
+            answers.add(new Answer(index));
             if (!q.getAnswer().toLowerCase().equals(answer.toLowerCase())) {
                 throw new InvalidAnswer(answer, q.getAnswer());
             }
@@ -69,21 +67,19 @@ public class Game {
         }
 
         private Question getQuestion () {
-            return Game.this.getQuestion(category, number);
+            return Game.this.getQuestion(index);
         }
     }
 
     public static class Answer {
-        private final int category;
-        private final int number;
+        private final Board.Index index;
 
-        public Answer(int category, int number) {
-            this.category = category;
-            this.number = number;
+        public Answer(Board.Index index) {
+            this.index = index;
         }
 
-        public boolean hasIndex(int category, int number) {
-            return this.category == category && this.number == number;
+        public boolean hasIndex(Board.Index index) {
+            return this.index.equals(index);
         }
     }
 }

@@ -1,14 +1,13 @@
 package quiztastic.ui;
 
 import quiztastic.app.Quiztastic;
+import quiztastic.core.Board;
 import quiztastic.domain.Game;
 import quiztastic.domain.InvalidAnswer;
 
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.text.ParseException;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -63,9 +62,7 @@ public class Protocol {
         for (Callable<Command> cmd : parsers) {
             try {
                 return cmd.call();
-            } catch (InputMismatchException e) {
-            } catch (NoSuchElementException e) {
-                continue;
+            } catch (NoSuchElementException ignored) {
             } catch (ParseException e) {
                 throw e;
             } catch (Exception e) {
@@ -93,7 +90,7 @@ public class Protocol {
             String id = in.next("[abcdefABCDEF][12345]00").toLowerCase();
             int category = LETTER_LOOKUP.lastIndexOf(id.substring(0,1));
             int question = NUMBER_LOOKUP.lastIndexOf(id.substring(1,2));
-            return new AnswerCommand(category, question);
+            return new AnswerCommand(Board.indexOf(category, question));
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             throw new ParseException("While parsing an answer, got: " + in.nextLine(), 0);
@@ -141,21 +138,23 @@ public class Protocol {
     }
 
     public class AnswerCommand implements Command {
-        private final int category;
-        private final int number;
+        private final Board.Index index;
 
         public AnswerCommand(int category, int number) {
-            this.category = category;
-            this.number = number;
+            this.index = Board.indexOf(category, number);
+        }
+
+        public AnswerCommand(Board.Index index) {
+            this.index = index;
         }
 
         @Override
         public void doIt() {
             Game game = quiz.getCurrentGame();
-            if (game.isAnswered(category, number)) {
+            if (game.isAnswered(index)) {
                 out.println("Already answered, choose another one.");
             } else {
-                Game.ActiveQuestion aq = game.selectQuestion(category, number);
+                Game.ActiveQuestion aq = game.selectQuestion(index);
                 out.println(aq.getQuestionText());
                 out.print("? ");
                 out.flush();

@@ -1,7 +1,7 @@
 package quiztastic.core;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /** A Jeopardy Board
  *
@@ -17,8 +17,16 @@ public class Board {
         }
     }
 
+    public static Index indexOf(int category, int number) {
+        return new Board.Index(category, number);
+    }
+
     public List<Group> getGroups() {
         return groups;
+    }
+
+    public Question getQuestion(Index index) {
+        return groups.get(index.categoryNumber).questions.get(index.questionNumber);
     }
 
     @Override
@@ -26,6 +34,39 @@ public class Board {
         return "Board{" +
                 "groups=" + groups +
                 '}';
+    }
+
+    public static class Index {
+        private final int categoryNumber;
+        private final int questionNumber;
+
+
+        public Index(int categoryNumber, int questionNumber) {
+            this.categoryNumber = categoryNumber;
+            this.questionNumber = questionNumber;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Index index = (Index) o;
+            return categoryNumber == index.categoryNumber &&
+                    questionNumber == index.questionNumber;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(categoryNumber, questionNumber);
+        }
+
+        @Override
+        public String toString() {
+            return "Index{" +
+                    "categoryNumber=" + categoryNumber +
+                    ", questionNumber=" + questionNumber +
+                    '}';
+        }
     }
 
     public static class Group {

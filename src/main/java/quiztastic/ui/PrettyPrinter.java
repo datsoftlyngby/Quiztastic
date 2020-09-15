@@ -1,5 +1,6 @@
 package quiztastic.ui;
 
+import quiztastic.core.Board;
 import quiztastic.core.Category;
 import quiztastic.domain.Game;
 
@@ -27,7 +28,7 @@ public class PrettyPrinter {
         for (int number = 0; number < 5; number++ ) {
             ArrayList<String> row = new ArrayList<>();
             for (int category = 0; category < 6; category++) {
-                if (game.isAnswered(category, number)) {
+                if (game.isAnswered(Board.indexOf(category, number))) {
                     row.add("---");
                 } else {
                     row.add(String.format("%d", (number + 1) * 100));
@@ -57,7 +58,8 @@ public class PrettyPrinter {
             }
             lines.add(builder.toString());
             columns.add(lines);
-        };
+        }
+
         boolean continueRunning = true;
         while (continueRunning) {
             continueRunning = false;
