@@ -12,25 +12,26 @@ public class ServerHandler implements Runnable {
         server = socket;
         in = new BufferedReader(new InputStreamReader(server.getInputStream()));
     }
+
     @Override
     public void run() {
-          String serverResponds = null;
-                  try{
-                      while (true) {
-                          serverResponds = in.readLine();
-                          if (serverResponds == null)break;
-                          System.out.println(serverHandle + " " + serverResponds);
-                      }
-                  }catch (IOException e){
-                      e.printStackTrace();
+        String serverResponds = null;
+        try {
+            while (true) {
+                serverResponds = in.readLine();
+                if (serverResponds == null) break;
+                System.out.println(serverHandle + " " + serverResponds);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
 
-                  }finally {
-                      try {
-                          in.close();
-                      } catch (IOException e) {
-                          e.printStackTrace();
-                      }
-                  }
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
     }

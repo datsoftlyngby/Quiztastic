@@ -31,42 +31,53 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+            out.println("what is your username?:");
+            String username = in.readLine();
+            try {
+                if (JeopardyServer.addPlayers(username) || username.isEmpty()) {
+                    serverBroadCast(username + " Is already in-game / not allowed");
+                    serverBroadCast("Reconnect and try again.");
+                    in.close();
+                    out.close();
+                } else {
+                    serverBroadCast(username + " added to the game");
+                    out.println("Hello " + username);
+                    players.add(username);
+                    clientUserName = username;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             while (true) {
                 String userInput = in.readLine();
                 if (userInput.startsWith("say")) {
                     int space = userInput.indexOf(" ");
                     if (space != -1) {
                         playerBroadCast(userInput.substring(space + 1));
-                    }
+                    }else if ((userInput.startsWith("!"))){
+                        space = userInput.indexOf(" ");
+                        String command = userInput.substring(space +1);
+                        switch (command.toLowerCase()){
+                            case "players":
+                                getPlayersInLobby();
+                                break;
+                            case "start":
+                                serverBroadCast("Starting game with: " + getPlayersInLobby() + " in the game...");
+                                break;
+                            default:
+                                break;
+                            }
 
-                } else if (userInput.contains("play")) {
-                    out.println("Whats your username?");
-                    String username = in.readLine();
-                    try {
-                        if (JeopardyServer.addPlayers(username)|| username.isEmpty()) {
-                            ServerBroadCast(username + " Is already in-game / not allowed");
-                        } else {
-                            ServerBroadCast(username + " added to the game");
-                            out.println("Hello " + username);
-                            players.add(username);
-                            clientUserName = username;
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-
                 }
-
-
-            }
-        } catch (IOException e) {
+            }catch (IOException e){
             e.printStackTrace();
-            System.err.println("IO ERROR ");
         } finally {
             try {
-                if(JeopardyServer.removePlayer(clientUserName)){
-                    ServerBroadCast(clientUserName + " has left");
+                if (JeopardyServer.removePlayer(clientUserName)) {
+                    serverBroadCast(clientUserName + " has left");
                     clientUserName = null;
                 }
                 out.close();
@@ -76,11 +87,13 @@ public class ClientHandler implements Runnable {
             }
         }
     }
-    private void ServerBroadCast(String substring) {
+
+    private void serverBroadCast(String substring) {
         for (ClientHandler clientHandler : clients) {
-                clientHandler.out.println("[SERVER] " + substring);
-            }
+            clientHandler.out.println("[SERVER] " + substring);
         }
+    }
+
     private void playerBroadCast(String substring) {
         for (ClientHandler clientHandler : clients) {
             if (clientUserName == null) {
@@ -90,6 +103,14 @@ public class ClientHandler implements Runnable {
             }
         }
 
+    }
+
+    public Set<String> getPlayersInLobby() {
+        Set<String> playersInLobby = new HashSet<>();
+        playersInLobby = JeopardyServer.getPlayers();
+        serverBroadCast("Current users in lobby: " + playersInLobby);
+
+return playersInLobby;
     }
 
     public Set<String> getPlayers() {

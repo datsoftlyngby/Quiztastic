@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class JeopardyServer {
     private static int PORT = 3400;
@@ -18,7 +17,6 @@ public class JeopardyServer {
     private static Set<String> players = new HashSet<>();
     private List<Thread> listOfThreads;
     private static ExecutorService pool = Executors.newFixedThreadPool(6);
-    private static int threadCount = 1;
 
     public static void main(String[] args) throws IOException {
         ServerSocket listener = new ServerSocket(PORT);
@@ -34,12 +32,6 @@ public class JeopardyServer {
             ClientHandler clientThread = new ClientHandler(client, clientHandlers,players);
             clientHandlers.add(clientThread);
             pool.execute(clientThread);
-            if (pool instanceof ThreadPoolExecutor) {
-                threadCount = ((ThreadPoolExecutor) pool).getActiveCount();
-                out.println("running clients: " + threadCount);
-            }
-
-
         }
     }
 
