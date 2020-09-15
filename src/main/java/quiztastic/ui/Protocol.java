@@ -2,6 +2,7 @@ package quiztastic.ui;
 
 import quiztastic.app.Quiztastic;
 import quiztastic.core.Board;
+import quiztastic.core.Player;
 import quiztastic.domain.Game;
 import quiztastic.domain.InvalidAnswer;
 
@@ -32,24 +33,37 @@ public class Protocol {
 
     public void run() {
         out.println("Welcome to Quiztastic!");
+        Player player = fetchPlayer();
         out.println("- press [h]elp for, you know, help.");
-        while (true) {
-            out.print("> ");
-            out.flush();
-            try {
-                Command cmd = fetchCommand();
-                in.nextLine();
-                if (cmd == null) {
-                    out.println("Thank you, next!");
-                    out.flush();
-                    return;
-                } else {
-                    cmd.doIt();
+        try {
+            quiz.getCurrentGame().addPlayer(player);
+            while (true) {
+                out.print("> ");
+                out.flush();
+                try {
+                    Command cmd = fetchCommand();
+                    in.nextLine();
+                    if (cmd == null) {
+                        out.println("Thank you, " + player + " next!");
+                        out.flush();
+                        return;
+                    } else {
+                        cmd.doIt(player);
+                    }
+                } catch (ParseException e) {
+                    out.println("Invalid command: " + e.getMessage());
                 }
-            } catch (ParseException e) {
-                out.println("Invalid command: " + e.getMessage());
             }
+        } finally {
+            quiz.getCurrentGame().removePlayer(player);
         }
+    }
+
+    private Player fetchPlayer() {
+        out.print("What is your name? ");
+        out.flush();
+        String playerId = in.nextLine();
+        return new Player(playerId);
     }
 
     private Command fetchCommand() throws ParseException {
@@ -58,6 +72,7 @@ public class Protocol {
                         this::parseDraw,
                         this::parseAnswer,
                         this::parseReset,
+                        this::parseScore,
                         this::parseQuit);
         for (Callable<Command> cmd : parsers) {
             try {
@@ -80,6 +95,11 @@ public class Protocol {
     public Command parseDraw() {
         in.next("d|draw");
         return new DrawCommand();
+    }
+
+    public Command parseScore() {
+        in.next("s|score");
+        return new ScoreCommand();
     }
 
     private static final String LETTER_LOOKUP = "abcdef";
@@ -108,12 +128,12 @@ public class Protocol {
     }
 
     public interface Command {
-        void doIt ();
+        void doIt(Player player);
     }
 
     public class HelpCommand implements Command {
         @Override
-        public void doIt() {
+        public void doIt(Player player) {
             out.println("This is the help page:");
             out.println("- [h]elp: for this help-page.");
             out.println("- [r]eset: for a new board.");
@@ -125,14 +145,14 @@ public class Protocol {
 
     public class DrawCommand implements Command {
         @Override
-        public void doIt() {
+        public void doIt(Player player) {
             printer.printBoard(quiz.getCurrentGame());
         }
     }
 
     public class ResetCommand implements Command {
         @Override
-        public void doIt() {
+        public void doIt(Player player) {
             quiz.resetGame();
         }
     }
@@ -149,7 +169,7 @@ public class Protocol {
         }
 
         @Override
-        public void doIt() {
+        public void doIt(Player player) {
             Game game = quiz.getCurrentGame();
             if (game.isAnswered(index)) {
                 out.println("Already answered, choose another one.");
@@ -160,12 +180,22 @@ public class Protocol {
                 out.flush();
                 String answer = in.nextLine();
                 try {
-                    aq.answerQuestion(answer);
+                    aq.answerQuestion(player, answer);
                     out.println("Correct!");
                 } catch (InvalidAnswer invalidAnswer) {
                     out.println("Sorry, the correct answer was " + invalidAnswer.getCorrectAnswer());
                 }
             }
+        }
+    }
+
+    private class ScoreCommand implements Command {
+
+        @Override
+        public void doIt(Player player) {
+            Game game = quiz.getCurrentGame();
+            game.getScores().forEach((p, i) ->
+                    out.println("- " + p.getId() + " has score: " + i ));
         }
     }
 }

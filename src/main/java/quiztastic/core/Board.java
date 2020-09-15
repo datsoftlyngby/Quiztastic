@@ -67,6 +67,10 @@ public class Board {
                     ", questionNumber=" + questionNumber +
                     '}';
         }
+
+        public Integer getScoreValue() {
+            return (questionNumber + 1) * 100;
+        }
     }
 
     public static class Group {
