@@ -89,6 +89,10 @@ public class Game {
         return scores;
     }
 
+    public void playRound(Player player, Interaction in) {
+
+    }
+
     public class ActiveQuestion {
         private final Board.Index index;
 

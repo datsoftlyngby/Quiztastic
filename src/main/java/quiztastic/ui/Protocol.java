@@ -127,8 +127,23 @@ public class Protocol {
         return null;
     }
 
+    public Command parsePlay() {
+        in.next("p|play");
+        return new PlayCommand();
+    }
+
+
     public interface Command {
         void doIt(Player player);
+    }
+
+    public class PlayCommand implements Command {
+
+        @Override
+        public void doIt(Player player) {
+            Game game = quiz.getCurrentGame();
+            game.playRound(player);
+        }
     }
 
     public class HelpCommand implements Command {
@@ -190,7 +205,6 @@ public class Protocol {
     }
 
     private class ScoreCommand implements Command {
-
         @Override
         public void doIt(Player player) {
             Game game = quiz.getCurrentGame();
