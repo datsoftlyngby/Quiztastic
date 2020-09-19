@@ -13,8 +13,6 @@ public class JeopardyServer {
     private static int PORT = 3400;
     private static ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //client threads
     private static Set<String> players = new HashSet<>(); //players / clients on server
-    private List<Thread> listOfThreads; //todo list of threads
-    private static ExecutorService pool = Executors.newFixedThreadPool(6); // pool of threads / clients / players
 
     public static void main(String[] args) throws IOException {
         ServerSocket listener = new ServerSocket(PORT);
@@ -29,7 +27,8 @@ public class JeopardyServer {
             out.println(info.getCanonicalHostName() + " // " + info.getHostName() + " // " + info.getHostAddress() + " // " + PORT + "]"); //useless info delte
             ClientHandler clientThread = new ClientHandler(client, clientHandlers,players);
             clientHandlers.add(clientThread); //threading add client to thread
-            pool.execute(clientThread); //start thread
+            Thread t = new Thread(clientThread);
+            t.start();
         }
     }
 

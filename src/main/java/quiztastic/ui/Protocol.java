@@ -1,5 +1,6 @@
 package quiztastic.ui;
 
+import WipServer.ClientHandler;
 import quiztastic.app.Quiztastic;
 import quiztastic.core.Category;
 import quiztastic.core.Player;
@@ -31,7 +32,7 @@ public class Protocol {
         return word;
     }
 
-    public void run() throws IOException {
+    public synchronized void run() throws IOException {
         try {
             out.println("Welcome to jeopardy type d for print, h for help");
             displayBoard();
@@ -73,6 +74,7 @@ public class Protocol {
         out.flush();
         userAnswer = in.readLine();
         if (game.answerQuestion(categoryNumber, questionNumber, userAnswer, player) == null && userAnswer != null) {
+           // out.println(game.getScore(player,questionNumber));
             out.println("'" + userAnswer + "' was Correct, congrats cheater\n");
         } else if (userAnswer == null || userAnswer.isEmpty()) {
             out.print("Answer cannot be empty.. pls fix!\n");

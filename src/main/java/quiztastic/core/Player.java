@@ -11,9 +11,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "id='" + id + '\'' +
-                '}';
+        return id;
     }
 
     @Override

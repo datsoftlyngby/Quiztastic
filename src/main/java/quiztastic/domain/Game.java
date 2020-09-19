@@ -38,7 +38,8 @@ public class Game {
         }
     }
 
-    public Map<Player, Integer> getScore() {
+    public Map<Player, Integer> getScore(Player player, int score) {
+
         return null;
     }
 
