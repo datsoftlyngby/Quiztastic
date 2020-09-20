@@ -1,6 +1,6 @@
 package newserver;
 
-public class
+/*public class
 GameHandler extends Thread {
     private final Server server;
     private final Socket socket;
@@ -13,3 +13,4 @@ GameHandler extends Thread {
         this.name = name;
     }
 }
+*/
