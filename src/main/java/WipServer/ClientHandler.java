@@ -10,16 +10,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
 
-public class ClientHandler extends Thread {
+public class ClientHandler implements Runnable {
     private Set<String> players; //temp player info
     private Player clientUserName; //clients - players username
     private final BufferedReader in;
     private final PrintWriter out;
     private final ArrayList<ClientHandler> clients; //todo
-    private volatile int waitingFor = 0;
 
 
     public ClientHandler(Socket ClientSocklet, ArrayList<ClientHandler> clients, Set<String> players) throws IOException { //consructor
@@ -30,13 +27,13 @@ public class ClientHandler extends Thread {
     }
 
     @Override
-    public synchronized void run() { //thread start for client
+    public void run() { //thread start for client
         try {
             out.println("what is your username?:");
             out.flush();
             String username = in.readLine(); //check if username is allowed / enabled < - >
             try {
-                if (JeopardyServer.addPlayers(username) || username.isEmpty() || username.toLowerCase().contains("anus")) {
+                if (JeopardyServer.addPlayers(username) || username.isEmpty()) {
                     out.println(username + " Is already in-game / not allowed");
                     out.println("Reconnect and try again.");
                     in.close();
@@ -46,88 +43,87 @@ public class ClientHandler extends Thread {
                     serverBroadCast("Current users in lobby: " + getPlayersInLobby());
                     players.add(username);
                     clientUserName = new Player(username);
+                    out.println("use 'say' to chat else use ! help for more infomation");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
             while (true) {
-                synchronized (this) {
-                    out.println("Jeopardy MENU:");
-                    out.println("'1'. Play \n'2'. Show players");
-                    String userInput = in.readLine();
-                    switch (userInput) {
-                        case "1":
-                            waitForB(this.clientUserName);
-                            serverBroadCast("Game starting... First player to chose category is: " + clientUserName.toString());
-                            Protocol p = new Protocol(in, out, clientUserName);
-                            break;
-                        case "2":
-                            break;
-                        default:
-                            break;
+                String userInput = in.readLine();
+                int space = userInput.indexOf(" ");
+                if (userInput.startsWith("say")) { //player broadcast msg
+                    if (space != -1) {
+                        out.println(userInput.substring(space + 1));
+                        playerBroadCast(userInput.substring(space + 1));
+                    }
+                } else if (userInput.startsWith("!")) { //server 'commands'
+                    if (space != -1) {
+                        switch (userInput.substring(space + 1)) {
+                            case "help":
+                                out.println("this is the help command it helps the player");
+                                break;
+                            case "play":
+                                Protocol p = new Protocol(in,out, clientUserName, "en");
+                                serverBroadCast(clientUserName.toString() + " has started a game ");
+                                p.run();
+                                break;
+                            case "players":
+                                out.println("hot gamer babes:" + getPlayersInLobby());
+                                break;
+                            case "spil":
+                                Protocol po = new Protocol(in,out, clientUserName, "da");
+                                serverBroadCast(clientUserName.toString() + " has started a game ");
+                                po.run();
+                                break;
+                            default:
+
+                        }
+
                     }
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (JeopardyServer.removePlayer(clientUserName.toString())) {
-                    removePlayer(clientUserName);
+                    removePlayer(clientUserName.toString());
                     serverBroadCast(clientUserName + " has left");
                     getPlayersInLobby();
                     clientUserName = null;
                 }
                 out.close();
                 in.close();
-                removePlayer(clientUserName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-    public void waitForB(Player client) throws InterruptedException {
-       boolean i = false;
-       synchronized (this){
-           if (waitingFor == 0){
-               i = true;
-               waitingFor = 3;
-               serverBroadCast("waiting for " + waitingFor);
-           }
-       }
-       serverBroadCast("waiting for players");
-       synchronized (this){
-           waitingFor --;
-           serverBroadCast(" < >" +waitingFor);
-           if (waitingFor == 0){
-               this.notifyAll();
-               serverBroadCast("Released");
-           }else {
-               while (waitingFor > 0){
-                   this.wait();
-               }
-           }
-       }
 
-    }
-
-
-    public void serverBroadCast(String substring) { //server broadcast
+    private void serverBroadCast(String substring) { //server broadcast
         for (ClientHandler clientHandler : clients) {
             clientHandler.out.println("[SERVER] " + substring);
         }
     }
 
+    private void playerBroadCast(String substring) { //player - client boradcast
+        for (ClientHandler clientHandler : clients) {
+            if (clientUserName == null) {
+            } else {
+                clientHandler.out.println(clientUserName + " Said: " + substring);
+            }
+        }
+
+    }
 
     public Set<String> getPlayersInLobby() { //gets players on server
         players = JeopardyServer.getPlayers();
         return players;
     }
 
-    public void removePlayer(Player player) { //remove players
+    public void removePlayer(String player) { //remove players
         players.remove(player);
-        JeopardyServer.removePlayer(player.toString());
+        JeopardyServer.removePlayer(player);
     }
-
 }

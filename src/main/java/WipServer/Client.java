@@ -20,7 +20,7 @@ public class Client {
         String genericConnectLine = "Connecting to: " + SERVER_IP + ":" + PORT;
         int userINTput;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("TEAM JUMBO SNEGL - JEOPARDY CLIENT:\nMenu: \n1. Auto connect to localhost \n2. Auto connect to droplet \n3. Manual connect");
+        System.out.println("TEAM JUMBO SNEGL - JEOPARDY CLIENT:\nMenu: \n1. Auto connect to localhost \n2. Auto connect to droplet \n3. Manual connect.");
         System.out.print(">");
         userINTput = scanner.nextInt();
         switch (userINTput){
@@ -51,7 +51,7 @@ public class Client {
                     System.out.println("ERROR IN INPUT");
                     getServerInfo();
                 }
-                    break;
+                break;
             default:
                 System.out.println("ERROR");
                 getServerInfo();

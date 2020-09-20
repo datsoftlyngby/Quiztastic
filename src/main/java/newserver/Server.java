@@ -30,7 +30,7 @@ public class Server extends Thread{
         System.out.println("[SERVER] listing to port " +PORT);
         try {
             while (true){
-                GameHandler handler = new GameHandler(this,socket.accept(),String)
+                GameHandler handler = new GameHandler(this,socket.accept(),String);
             }
         } catch (IOException e) {
             e.printStackTrace();
