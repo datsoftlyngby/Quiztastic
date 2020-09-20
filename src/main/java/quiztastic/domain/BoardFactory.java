@@ -4,9 +4,9 @@ import quiztastic.core.Board;
 import quiztastic.core.Category;
 import quiztastic.core.Question;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BoardFactory {
@@ -20,7 +20,9 @@ public class BoardFactory {
         List<Question> questions =
                 questionRepository.getQuestionsWithCategory(c);
         if (questions.size() >= 5) {
-            return new Board.Group(c, questions.subList(0, 5));
+            var cat = new ArrayList<>(questions.subList(0, 5));
+            Collections.sort(cat, Comparator.comparingInt(Question::getScore));
+            return new Board.Group(c, cat);
         } else {
             throw new IllegalArgumentException("Not enough questions in category");
         }

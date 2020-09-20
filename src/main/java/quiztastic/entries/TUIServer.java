@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class TUIServer implements Closeable {
 
@@ -44,7 +43,7 @@ public class TUIServer implements Closeable {
             public void run() {
                 try {
                     System.out.println("Server accepts requests at: " + openSocket);
-                    Protocol p = new Protocol(new Scanner(openSocket.getInputStream()),
+                    Protocol p = new Protocol(openSocket.getInputStream(),
                             new PrintWriter(openSocket.getOutputStream()));
                     p.run();
                 } catch (IOException e) {

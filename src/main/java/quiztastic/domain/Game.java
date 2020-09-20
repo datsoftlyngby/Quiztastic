@@ -6,10 +6,7 @@ import quiztastic.core.Player;
 import quiztastic.core.Question;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -17,12 +14,14 @@ public class Game {
     private final Board board;
     private final List<Answer> answers;
     private final List<Player> players;
+    private Round activeRound;
 
     public Game(int id, Board board, List<Answer> answers, List<Player> players) {
         this.id = id;
         this.board = board;
         this.answers = answers;
         this.players = players;
+        this.activeRound = null;
     }
 
     public Game(int id, Board board) {
@@ -54,16 +53,25 @@ public class Game {
         return board.getQuestion(index);
     }
 
-    public void removePlayer(Player player) {
-        synchronized (players) {
-            players.remove(player);
-        }
+    public synchronized void removePlayer(Player player) {
+        players.remove(player);
+        if (activeRound != null) activeRound.notifyNumberOfPlayersUpdated();
     }
 
-    public void addPlayer(Player player) {
-        synchronized (players) {
-            players.add(player);
+    public synchronized void addPlayer(Player player) {
+        if (players.contains(player)) {
+            throw new InvalidParameterException("Player already exist");
         }
+        players.add(player);
+        if (activeRound != null) activeRound.notifyNumberOfPlayersUpdated();
+    }
+
+    public synchronized Round getActiveRound() {
+        if (activeRound == null || activeRound.done()) {
+            activeRound = new Round(this);
+            activeRound.startRound();
+        }
+        return activeRound;
     }
 
     public Map<Player, Integer> getScores () {
@@ -89,26 +97,29 @@ public class Game {
         return scores;
     }
 
-    public void playRound(Player player, Interaction in) {
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
+    }
 
+    public synchronized void addAnswer(Answer answer) {
+        answers.add(answer);
     }
 
     public class ActiveQuestion {
         private final Board.Index index;
 
-        public ActiveQuestion(Board.Index index) {
+        private ActiveQuestion(Board.Index index) {
             this.index = index;
         }
 
-        public void answerQuestion(Player player, String answer) throws InvalidAnswer {
+        public Answer timeoutQuestion() {
+            return new Answer(index, null, getQuestion().getAnswer(), true);
+        }
+
+        public Answer answerQuestion(Player player, String answer) {
             Question q = getQuestion();
             boolean isCorrect = q.getAnswer().toLowerCase().equals(answer.toLowerCase());
-            synchronized (answers) {
-                answers.add(new Answer(index, player, isCorrect));
-            }
-            if (!isCorrect) {
-                throw new InvalidAnswer(answer, q.getAnswer());
-            }
+            return new Answer(index, player, answer, isCorrect);
         }
 
         public String getQuestionText() {
@@ -123,16 +134,44 @@ public class Game {
     public static class Answer {
         private final Board.Index index;
         private final Player player;
+        private final String answer;
         private final Boolean correct;
 
-        public Answer(Board.Index index, Player player, Boolean correct) {
+        public Answer(Board.Index index, Player player, String answer, Boolean correct) {
             this.index = index;
             this.player = player;
+            this.answer = answer;
             this.correct = correct;
         }
 
         public boolean hasIndex(Board.Index index) {
             return this.index.equals(index);
+        }
+
+        @Override
+        public String toString() {
+            return "Answer{" +
+                    "index=" + index +
+                    ", player=" + player +
+                    ", answer='" + answer + '\'' +
+                    ", correct=" + correct +
+                    '}';
+        }
+
+        public boolean isCorrect() {
+            return correct;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public Board.Index getIndex() {
+            return index;
+        }
+
+        public String getAnswer() {
+            return answer;
         }
     }
 }
