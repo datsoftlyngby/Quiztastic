@@ -43,7 +43,7 @@ public class ClientHandler implements Runnable {
                     serverBroadCast("Current users in lobby: " + getPlayersInLobby());
                     players.add(username);
                     clientUserName = new Player(username);
-                    out.println("use 'say' to chat else use ! help for more infomation");
+                    out.println("use 'say' to chat else use ! help for more infomation or ! play for play the game");
                 }
 
             } catch (Exception e) {
@@ -61,7 +61,7 @@ public class ClientHandler implements Runnable {
                     if (space != -1) {
                         switch (userInput.substring(space + 1)) {
                             case "help":
-                                out.println("this is the help command it helps the player");
+                                out.println("ITS FUCKING JEOPARDY, IF YOU DONT KNOW HOW TO PLAY GOOGLE IT!\n but 4real, 'd' to draw the board, 'a' to answer. answers are entered as: Catagory Letter, Question, like so: 'B400'");
                                 break;
                             case "play":
                                 Protocol p = new Protocol(in,out, clientUserName, "en");
